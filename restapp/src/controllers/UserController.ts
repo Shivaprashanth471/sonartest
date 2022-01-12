@@ -1,7 +1,7 @@
 import {inject, injectable} from "inversify";
 import "reflect-metadata";
 import {TYPES} from "../types";
-import {getOTPCode, sendMail, sendSMS} from "../utils/helpers"
+import {getOTPCode, sendMail, sendSMS, sendTemplateMail} from "../utils/helpers"
 import {IUserController} from "./IUserController";
 import {IRouterRequest} from "../interfaces/IRouterRequest";
 import {IUserRecord} from "../records/IUserRecord";
@@ -472,8 +472,8 @@ class UserController implements IUserController {
                 await this.VerificationCodeRecord?.addVerificationCode(verificationCode);
 
                 let emailStatus: any = 200, smsStatus: any = 200
-                let message = code + " is your code to verify your email address. DO NOT SHARE OTP WITH ANYONE, Vitawerks."
-                let email = await sendMail(ses, "Signup Verification", message, body.email);
+                let message = "<html><body> Hi, <br/><br/> Your verification code is " +code+ ". <br/><br/> Enter this code in the Vitawerks app to register your customer account. <br/><br/> If you have any questions, send us an email account9@vitawerks.com. <br/><br/> We are glad you are here! <br/><br/> The Vitawerks team </html></body>"
+                let email = await sendTemplateMail(ses, "Signup Verification", message, body.email);
                 console.log("email result =======>", email)
                 // @ts-ignore
                 if (typeof email["statusCode"] != "undefined") {
