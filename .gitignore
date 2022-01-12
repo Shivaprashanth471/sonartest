@@ -1,0 +1,9 @@
+.idea
+.serverless
+node_modules
+backend/facility-service/.DS_Store
+build
+backend/shift-service-old/src/.DS_Store
+backend/.DS_Store
+backend/journey-api
+backend/dynamo.js

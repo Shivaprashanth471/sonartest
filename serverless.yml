@@ -1,0 +1,53 @@
+# serverless.yml
+
+service: api-service
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: ${opt:stage, 'dev'}
+  profile: ${file(configs/config.${self:provider.stage}.yml):custom.profile}
+  region: ${file(configs/config.${self:provider.stage}.yml):custom.region}
+  environment:
+    RUN_LOCAL_PORT: 3000
+    HCP_BUCKET_NAME: ${self:custom.HcpBucket.name}
+    DIALPAD_API_KEY: YjFtDzsKjBvbCGYxFkZkD8bfpXm7PRTbWKPmbVSfwvqHdkqgSkwB4ejG89DJHGquHhGk4M4T9h7PuYc7ESGgr4eaJDa5ems84jX9
+    MAINLINE_USER_ID: 4767404221857792
+    HCP_TYPES: RN,LVN,CNA,MedTech,CareGiver
+    DB_NAME: vw-${self:provider.stage}
+    DB_TYPE: mongodb
+    REGION: ${file(configs/config.${self:provider.stage}.yml):custom.region}
+    HOST_URL: https://admin.${self:provider.stage}.vitawerks.com/
+    API_URL: https://${self:provider.stage}.api.vitawerks.com/
+    ONE_SIGNAL_KEY: MjIzYzdlNjUtNDMwYi00YjJkLTllNTAtZTIzYTYxNTg0NGFi
+    ONE_SIGNAL_APP_ID: b48dd2a1-5c74-489e-b911-e961adef573e
+  iamRoleStatements:
+    - ${file(iam/HcpBucket.yml):HcpBucketIAM}
+    - ${file(iam/SendMailIAM.yml):SendMailIAM}
+
+functions:
+  restapp:
+    handler: restapp/build/src/app.handler
+    events:
+      - http: ANY /
+      - http: 'ANY {proxy+}'
+
+resources:
+  Resources:
+    HcpBucket: ${file(resources/HcpBucket.yml):HcpBucket}
+
+plugins:
+  - serverless-domain-manager
+custom:
+  HcpBucket:
+    name: hcp-attachments-final-${self:provider.stage}
+  customDomain:
+    domainName: ${self:provider.stage}.api.vitawerks.com
+    stage: ${self:provider.stage}
+    basePath: ''
+    certificateName: '*.api.vitawerks.com'
+    createRoute53Record: true
+    endpointType: 'regional'
+    securityPolicy: tls_1_2
+    apiType: rest
+    autoDomain: false

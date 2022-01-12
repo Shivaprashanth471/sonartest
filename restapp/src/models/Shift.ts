@@ -1,0 +1,50 @@
+import {ObjectId} from "mongodb";
+
+export interface Shift {
+    title: string,
+    facility_id: ObjectId,
+    requirement_id: ObjectId,
+    application_id: ObjectId,
+    hcp_user_id: ObjectId,
+    hcp_user: object,
+    approved_by: object,
+    warning_details: string,
+    warning_type: string,
+    time_breakup: {
+        check_in_time: string,
+        check_out_time: string,
+        break_timings: Array<object>
+    },
+    shift_approved_by: string,
+    payments: {
+        hourly_hcp: number,
+        differential: number,
+        hourly_ot: number,
+    },
+    expected: {
+        shift_start_time: Date | null,
+        shift_end_time: Date | null,
+        shift_duration_minutes: number,
+    },
+    actuals: {
+        shift_start_time: Date | null,
+        shift_end_time: Date | null,
+    },
+    total_outbound_payment: number,
+    total_inbound_payment: number,
+    payment_breakup_details: object,
+    shift_status: string,
+    is_in_break: boolean,
+    shift_type: string,
+    shift_date: string,
+    hcp_type: string,
+    shift_details: string,
+    inbound_payment_status: string,
+    outbound_payment_status: string,
+    cdhp_form_attachment: string,
+    is_cdhp_valid: boolean,
+    is_shift_acknowledged_by_facility: boolean,
+    created_by: ObjectId,
+    created_at: Date,
+    updated_at: Date,
+}
