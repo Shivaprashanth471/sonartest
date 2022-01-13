@@ -529,10 +529,20 @@ class UserController implements IUserController {
                         if (isBefore(new Date(), verificationCode.code_expires_at)) {
                             verificationCode.code_used_at = new Date()
                             verificationCode.is_active = false
+
+                            let data: any = {
+                                is_signup_initiated: false
+                            }
+                            let hcp = await this.HCPRecord?.getHCP({email: {$regex: new RegExp(body.email, "i")}})
+                            if (hcp) {
+                                data["is_signup_initiated"] = true
+                                data["hcp_id"] = hcp._id
+                            }
                             await this.VerificationCodeRecord?.editVerificationCode({_id: verificationCode._id}, verificationCode)
                             return req.replyBack(200, {
                                 http_code: 200,
-                                msg: 'email verification successful'
+                                msg: 'email verification successful',
+                                data
                             })
                         } else {
                             return req.replyBack(500, {

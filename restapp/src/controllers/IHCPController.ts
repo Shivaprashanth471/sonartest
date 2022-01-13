@@ -33,6 +33,7 @@ export interface IHCPController {
     removeHCPContract: (req: IRouterRequest) => void
 
     editHCPProfile: (req: IRouterRequest) => void
+    getHCProfile: (req: IRouterRequest) => void
 }
 
 

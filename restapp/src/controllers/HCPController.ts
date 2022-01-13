@@ -1579,6 +1579,63 @@ class HCPController implements IHCPController {
 
     }
 
+    getHCProfile = async (req: IRouterRequest): Promise<void> => {
+
+        let body = req.getBody();
+        const params = req.getParams();
+        const hcp_id = params.id;
+        body["hcp_id"] = hcp_id;
+
+        let rules = {
+            hcp_id: 'required|exists:hcps,_id',
+        };
+
+        let validation = new Validator(req.getBody(), rules);
+
+        validation.passes(async () => {
+            try {
+                let data: any = {}
+                let specializations: any = []
+                let total_exp = 0
+                let hcp = await this.HCPRecord?.getHCP({_id: new ObjectId(hcp_id)});
+                let work_experiences = await this.HCPExperianceRecord?.listHCPExperience({hcp_id: new ObjectId(hcp_id)});
+                for (let experience of work_experiences) {
+                    if (experience.still_working_here === "0" && experience.exp_type === "fulltime") {
+                        let start_date = new Date(experience.start_date)
+                        let end_date = new Date(experience.end_date)
+
+                        var diffYear = (start_date.getTime() - end_date.getTime()) / 1000;
+                        diffYear /= (60 * 60 * 24);
+                        total_exp = total_exp + Math.abs(Math.round(diffYear / 365.25))
+                    }
+                    specializations.push(experience.specialisation)
+                }
+
+                data = {
+                    hcp_type: hcp.hcp_type,
+                    region: hcp.address.region,
+                    shift_type_preference: hcp.nc_details.shift_type_preference,
+                    specializations,
+                    total_exp
+                }
+                req.replyBack(200, {"msg": "hcp data", data});
+            } catch (err) {
+                console.log(err, "error");
+                req.replyBack(500, {error: err});
+            }
+        });
+
+        validation.fails((errors: any) => {
+            console.log("fails ... ", errors)
+            req.replyBack(400, {
+                "success": false,
+                errors: validation.errors.errors
+            })
+        });
+
+
+    }
+
 }
 
 export {HCPController};

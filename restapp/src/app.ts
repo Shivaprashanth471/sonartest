@@ -136,6 +136,7 @@ const registerEndpoints = () => {
         app.get('/hcp/lite', wrapExpressRequest(hcpController.listLiteHCP));
         app.get('/hcp/:id', wrapExpressRequest(hcpController.getHCP));
         app.put('/hcp/:id', wrapExpressRequest(hcpController.editHCP));
+        app.get('/hcp/:id/profile', wrapExpressRequest(hcpController.getHCProfile));
         app.put('/hcp/:id/profile', wrapExpressRequest(hcpController.editHCPProfile));
         app.patch('/hcp/:id/approve', wrapExpressRequest(hcpController.approveHCP));
         app.patch('/hcp/:id/reject', wrapExpressRequest(hcpController.rejectHCP));
