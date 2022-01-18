@@ -1592,6 +1592,14 @@ class HCPController implements IHCPController {
 
         let validation = new Validator(req.getBody(), rules);
 
+        validation.fails((errors: any) => {
+            console.log("fails valid ... ", errors)
+            req.replyBack(400, {
+                "success": false,
+                errors: validation.errors.errors
+            })
+        });
+
         validation.passes(async () => {
             try {
                 let data: any = {}
@@ -1600,11 +1608,11 @@ class HCPController implements IHCPController {
                 let hcp = await this.HCPRecord?.getHCP({_id: new ObjectId(hcp_id)});
                 let work_experiences = await this.HCPExperianceRecord?.listHCPExperience({hcp_id: new ObjectId(hcp_id)});
                 for (let experience of work_experiences) {
-                    if (experience.still_working_here === "0" && experience.exp_type === "fulltime") {
+                    if (experience.still_working_here == "0" && experience.exp_type == "fulltime") {
                         let start_date = new Date(experience.start_date)
                         let end_date = new Date(experience.end_date)
 
-                        var diffYear = (start_date.getTime() - end_date.getTime()) / 1000;
+                        var diffYear = (end_date.getTime() - start_date.getTime()) / 1000;
                         diffYear /= (60 * 60 * 24);
                         total_exp = total_exp + Math.abs(Math.round(diffYear / 365.25))
                     }
@@ -1624,15 +1632,6 @@ class HCPController implements IHCPController {
                 req.replyBack(500, {error: err});
             }
         });
-
-        validation.fails((errors: any) => {
-            console.log("fails ... ", errors)
-            req.replyBack(400, {
-                "success": false,
-                errors: validation.errors.errors
-            })
-        });
-
 
     }
 

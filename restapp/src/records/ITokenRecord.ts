@@ -6,4 +6,6 @@ export interface ITokenRecord {
 
     editToken(condition: any, data: any): Promise<any>
 
+    deleteToken(data: any): Promise<any>
+
 }

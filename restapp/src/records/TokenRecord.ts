@@ -49,4 +49,15 @@ export class TokenRecord implements ITokenRecord {
         });
     }
 
+    async deleteToken(filter: { [name: string]: string }): Promise<any> {
+        return new Promise((resolve, reject) => {
+            this.getTokenCollection()?.deleteOne(filter).then((record: any) => {
+                resolve(record)
+            }).catch((err: any) => {
+                reject(err);
+            })
+        });
+    }
+
+
 }

@@ -179,7 +179,7 @@ class UserController implements IUserController {
                     delete user.password
 
                     let token = jsonwebtoken.sign(user, JWT_SECRET, {
-                        expiresIn: "2 days"
+                        // expiresIn: "365 days"
                     });
 
                     let tokenObj = {
@@ -274,7 +274,53 @@ class UserController implements IUserController {
     }
 
     logout = async (req: IRouterRequest) => {
-        req.replyBack(200, {"msg": "Logout successful"});
+
+        const JWT_SECRET = process.env.JWT_SECRET || "default";
+
+        try {
+            const headers = req.getHeaders();
+            const authHeader = headers["authorization"];
+
+            if (!authHeader) {
+                req.replyBack(403, {
+                    error: "User not logged in"
+                });
+            } else if (authHeader == "") {
+                req.replyBack(403, {
+                    error: "User not logged in"
+                });
+            } else {
+                const bearer_bits = authHeader.split(' ');
+                if (bearer_bits.length <= 1) {
+                    req.replyBack(403, {
+                        error: "Invalid Token"
+                    });
+                } else {
+                    let token = bearer_bits[1];
+                    const jsonPayload = jsonwebtoken.verify(token, JWT_SECRET);
+                    if (jsonPayload) {
+                        // @ts-ignore
+                        let user_id = new ObjectId(jsonPayload._id)
+                        await this.TokenRecord?.deleteToken({
+                            token,
+                            is_active: true,
+                            user_id
+                        })
+
+                        req.replyBack(200, {"msg": "Logout successful"});
+                    } else {
+                        return req.replyBack(403, {error: "Not logged in"});
+                    }
+
+                }
+
+            }
+
+
+        } catch (err) {
+            req.replyBack(500, {error: "User not logged in"});
+        }
+
     }
 
     forgotPassword = async (req: IRouterRequest): Promise<any> => {
@@ -472,7 +518,7 @@ class UserController implements IUserController {
                 await this.VerificationCodeRecord?.addVerificationCode(verificationCode);
 
                 let emailStatus: any = 200, smsStatus: any = 200
-                let message = "<html><body> Hi, <br/><br/> Your verification code is " +code+ ". <br/><br/> Enter this code in the Vitawerks app to register your customer account. <br/><br/> If you have any questions, send us an email account9@vitawerks.com. <br/><br/> We are glad you are here! <br/><br/> The Vitawerks team </html></body>"
+                let message = "<html><body> Hi, <br/><br/> Your verification code is " + code + ". <br/><br/> Enter this code in the Vitawerks app to register your customer account. <br/><br/> If you have any questions, send us an email account9@vitawerks.com. <br/><br/> We are glad you are here! <br/><br/> The Vitawerks team </html></body>"
                 let email = await sendTemplateMail(ses, "Signup Verification", message, body.email);
                 console.log("email result =======>", email)
                 // @ts-ignore

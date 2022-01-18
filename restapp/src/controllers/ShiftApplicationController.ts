@@ -334,10 +334,10 @@ class ShiftApplicationController implements IShiftApplicationController {
 
                     // await sendTemplateMail(ses, "New Shift Application", message, "pranitha@tericsoft.com");
 
-                    await sendTemplateMail(ses, "New Shift Application", message, "account9@vitawerks.com");
-                    await sendTemplateMail(ses, "New Shift Application", message, "account7@vitawerks.com");
-                    await sendTemplateMail(ses, "New Shift Application", message, "account14@vitawerks.com");
-                    await sendTemplateMail(ses, "New Shift Application", message, "account2@vitawerks.com");
+                    // await sendTemplateMail(ses, "New Shift Application", message, "account9@vitawerks.com");
+                    // await sendTemplateMail(ses, "New Shift Application", message, "account7@vitawerks.com");
+                    // await sendTemplateMail(ses, "New Shift Application", message, "account14@vitawerks.com");
+                    // await sendTemplateMail(ses, "New Shift Application", message, "account2@vitawerks.com");
 
                 } else {
                     req.replyBack(500, {error: "invalid requirement id"})
