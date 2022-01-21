@@ -118,7 +118,7 @@ class FacilityController implements IFacilityController {
                     let date = new Date(body.new_shifts)
                     shift_req_filter["shift_date"] = {"$gte": date}
                 }
-                shift_req_filter["status"] = "published"
+                shift_req_filter["status"] = "open"
 
                 let facility_ids: Array<any> = []
                 facility_ids = await this.ShiftRequirementRecord?.getFacilityRequirements(shift_req_filter)
@@ -204,7 +204,7 @@ class FacilityController implements IFacilityController {
                     shift_req_filter["shift_date"] = {"$eq": shift_start_date}
                 }
             }
-            shift_req_filter["status"] = "published"
+            shift_req_filter["status"] = "open"
 
             let facility_ids: Array<any> = []
             facility_ids = await this.ShiftRequirementRecord?.getFacilityRequirements(shift_req_filter)

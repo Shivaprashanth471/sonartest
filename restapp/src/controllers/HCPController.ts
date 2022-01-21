@@ -1615,8 +1615,9 @@ class HCPController implements IHCPController {
                         var diffYear = (end_date.getTime() - start_date.getTime()) / 1000;
                         diffYear /= (60 * 60 * 24);
                         total_exp = total_exp + Math.abs(Math.round(diffYear / 365.25))
+
+                        specializations.push(experience.specialisation)
                     }
-                    specializations.push(experience.specialisation)
                 }
 
                 data = {

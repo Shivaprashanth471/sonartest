@@ -293,6 +293,8 @@ class ShiftApplicationController implements IShiftApplicationController {
 
                     const application_data = {
                         requirement_id: new ObjectId(params.id), // URL ID
+                        facility_id: new ObjectId(requirement.facility_id),
+                        shift_type: requirement.shift_type,
                         hcp_user_id: new ObjectId(body.hcp_user_id),
                         added_by_id: new ObjectId(body.applied_by),
                         shift_date: new Date(requirement.shift_date),
@@ -361,7 +363,8 @@ class ShiftApplicationController implements IShiftApplicationController {
         body["application_id"] = application_id;
 
         let rules = {
-            approved_by: 'required|exists:users,_id',
+            rejected_by: 'required|exists:users,_id',
+            reason: 'required|min:5',
             application_id: 'required|exists:shift_applications,_id'
         };
 
@@ -369,30 +372,28 @@ class ShiftApplicationController implements IShiftApplicationController {
 
         validation.passes(async () => {
             try {
-
                 const application = await this.ShiftApplicationRecord?.getApplication({_id: new ObjectId(application_id)});
                 const hcp_user = await this.UserRecord?.getUser({_id: new ObjectId(application.hcp_user_id)});
 
-                const approved_by = await this.UserRecord?.getUser({_id: new ObjectId(body.approved_by)});
+                const rejected_by = await this.UserRecord?.getUser({_id: new ObjectId(body.rejected_by)});
 
                 if (hcp_user.is_active == "false") {
                     return req.replyBack(500, {error: "Cannot reject application HCP is deactivated"})
                 }
 
                 application.status = "rejected";
-                application.approved_by_id = body.approved_by;
+                application.rejected_by_id = body.rejected_by;
                 application.updated_at = new Date();
 
-                console.log(approved_by, "rejected by");
-
-                application.approved_by = {
-                    first_name: approved_by.first_name,
-                    last_name: approved_by.last_name,
-                    email: approved_by.email,
-                    role: approved_by.role
+                application.rejected_by = {
+                    first_name: rejected_by.first_name,
+                    last_name: rejected_by.last_name,
+                    email: rejected_by.email,
+                    role: rejected_by.role
                 }
+                application.rejected_reason = body["reason"]
 
-                const response = await this.ShiftApplicationRecord?.editApplication({_id: new ObjectId(application_id)}, application);
+                await this.ShiftApplicationRecord?.editApplication({_id: new ObjectId(application_id)}, application);
                 // TODO send email
 
                 req.replyBack(200, {msg: 'Application has been rejected'})
@@ -524,6 +525,73 @@ class ShiftApplicationController implements IShiftApplicationController {
                 errors: validation.errors.errors
             })
         });
+    }
+
+    listAllApplications = async (req: IRouterRequest): Promise<void> => {
+
+        const queryArgs = req.getQueryArgs();
+        const page = parseInt(queryArgs.page) || 1;
+        const limit = parseInt(queryArgs.limit) || 20;
+
+        let rules = {
+            page: 'numeric',
+            limit: 'numeric'
+        };
+
+        let validation = new Validator(req.getQueryArgs(), rules);
+
+        validation.fails((errors: any) => {
+            req.replyBack(400, {
+                "success": false,
+                errors: validation.errors.errors
+            })
+        });
+
+        validation.passes(async () => {
+            try {
+                let filter: any = {}
+                if (queryArgs.new_shifts != undefined) {
+                    let date = new Date(queryArgs.new_shifts)
+                    filter["shift_date"] = {"$gte": date}
+                }
+                if (typeof queryArgs.start_date !== "undefined") {
+                    let start_date = new Date(queryArgs.start_date)
+                    if (typeof queryArgs.end_date !== "undefined") {
+                        let end_date = new Date(queryArgs.end_date)
+                        filter["shift_date"] = {"$gte": start_date, "$lte": end_date}
+                    } else {
+                        filter["shift_date"] = {"$eq": start_date}
+                    }
+                }
+                if (queryArgs.status) {
+                    filter["status"] = queryArgs.status;
+                }
+
+                const applications = await this.ShiftApplicationRecord?.paginate(filter, {}, page, limit, {created_at: -1});
+
+                let facility_ids: any = []
+                let facility_mapping: any = {}
+                for (let application of applications.docs) {
+                    facility_ids.push(new ObjectId(application.facility_id))
+                }
+                const facilities = await this.FacilityRecord?.getFacilities({_id: {$in: facility_ids}})
+                for (let facility of facilities) {
+                    facility_mapping[facility._id] = facility.facility_name
+                }
+
+                for (let application of applications.docs) {
+                    application["facility_name"] = facility_mapping[application.facility_id]
+                }
+
+                return req.replyBack(200, {data: applications})
+            } catch (err: any) {
+                console.log("err", err);
+                req.replyBack(500, {
+                    error: err.toString()
+                });
+            }
+        });
+
     }
 
 }

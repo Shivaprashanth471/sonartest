@@ -15,4 +15,5 @@ export interface IShiftApplicationRecord {
 
     getHCPApplication(requirement_id: string, hcp_user_id: string, filter: any | undefined): Promise<any>
 
+    paginate(filter: any, select: any, page: number, limit: number, sort: any): Promise<any>
 }

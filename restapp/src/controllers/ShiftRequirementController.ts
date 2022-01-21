@@ -130,7 +130,7 @@ class ShiftRequirementController implements IShiftRequirementController {
                             hcp_count: body.hcp_count,
                             hcp_type: hcp_type,
                             shift_type: body.shift_type,
-                            status: "published",
+                            status: "open",
                             is_active: true,
                             is_published: true,
                             got_required_hcps: false,

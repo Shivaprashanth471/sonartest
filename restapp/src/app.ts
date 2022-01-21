@@ -27,12 +27,19 @@ import {IBlastsController} from "./controllers/IBlastsController";
 import {IProcessController} from "./controllers/IProcessController"
 import {Container} from 'inversify';
 
+let path = require('path');
 let cron = require('node-cron')
 var axios = require('axios');
 
 const app = express();
 app.use(bodyParser.json());
 app.use(cors())
+
+// app.use('/downloads', express.static(path.join(__dirname, 'downloads')));
+// app.get('/download/:name', function (req, res) {
+//     const file = "src/downloads/" + req.params.name;
+//     res.download(file, req.params.name); // Set disposition and send it.
+// });
 
 export var container: Container
 const registerEndpoints = () => {
@@ -101,6 +108,7 @@ const registerEndpoints = () => {
         app.get('/shift/requirement/:id', wrapExpressRequest(shiftRequirementController.view));
         app.patch('/shift/requirement/:id/cancel', wrapExpressRequest(shiftRequirementController.cancel));
 
+        app.get('/shift/application', wrapExpressRequest(shiftApplicationController.listAllApplications));
         app.post('/shift/requirement/:id/application', wrapExpressRequest(shiftApplicationController.newApplication));
         app.get('/shift/requirement/:id/application', wrapExpressRequest(shiftApplicationController.listApplications));
         app.get('/shift/hcp/:id/application', wrapExpressRequest(shiftApplicationController.listHCPApplications));
@@ -111,6 +119,7 @@ const registerEndpoints = () => {
         app.get('/shift/requirement/:id/shift', wrapExpressRequest(shiftController.listRequirementShifts));
         app.post('/shift/hcp/:id/shift', wrapExpressRequest(shiftController.listHCPShifts))
         app.get('/shift/stats', wrapExpressRequest(shiftController.statusStats));
+        app.post('/shift/download', wrapExpressRequest(shiftController.downloadShifts));
         app.get('/shift/:id', wrapExpressRequest(shiftController.viewShift));
 
         app.post('/shift/:id/checkIn', wrapExpressRequest(shiftController.checkIn));
@@ -202,7 +211,6 @@ if (process.env.RUN_LOCAL) {
 
 cron.schedule('0 0 * * *', () => {
     try {
-        console.log("running cron")
         let config = {
             method: 'get',
             url: process.env.API_URL + 'shiftReminder',

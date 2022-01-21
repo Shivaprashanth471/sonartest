@@ -7,6 +7,7 @@ export interface IShiftApplicationController {
     rejectApplication: (req: IRouterRequest) => void
     listApplications: (req: IRouterRequest) => void
     listHCPApplications: (req: IRouterRequest) => void
+    listAllApplications: (req: IRouterRequest) => void
 }
 
 

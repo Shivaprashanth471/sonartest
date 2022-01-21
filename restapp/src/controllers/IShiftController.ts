@@ -19,6 +19,7 @@ export interface IShiftController {
     cancel: (req: IRouterRequest) => void
     closed: (req: IRouterRequest) => void
     statusStats: (req: IRouterRequest) => void
+    downloadShifts: (req: IRouterRequest) => void
 }
 
 

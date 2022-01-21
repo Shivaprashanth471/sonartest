@@ -4,6 +4,7 @@ import {dbClient, tables} from '../../infrastructures/DynamoDB';
 import {IShiftApplicationRecord} from "./IShiftApplicationRecord";
 import {MongoClient} from "mongodb";
 import {TYPES} from "../types";
+import async from "async";
 
 @injectable()
 export class ShiftApplicationRecord implements IShiftApplicationRecord {
@@ -53,7 +54,6 @@ export class ShiftApplicationRecord implements IShiftApplicationRecord {
                 reject(err);
             })
         });
-
     }
 
     async editApplication(filter: any, updateObj: any): Promise<any> {
@@ -73,6 +73,45 @@ export class ShiftApplicationRecord implements IShiftApplicationRecord {
             }).catch((err: any) => {
                 reject(err);
             })
+        });
+    }
+
+    async paginate(filter: any, select: any, page: number = 1, limit: number = 20, sort: any): Promise<any> {
+
+        return new Promise((resolve, reject) => {
+            let response_data = {
+                docs: [],
+                page: page,
+                limit: limit,
+                pages: 1,
+                total: 1
+            };
+            let async_tasks = [{
+                task: this.getShiftApplicationCollection()?.find(filter, {projection: {_id: 1}}).count(),
+                key: 'stats'
+            }, {
+                task: this.getShiftApplicationCollection()?.find(filter).limit(limit).skip((page - 1) * limit).sort(sort)
+                    .project(select).toArray(),
+                key: 'docs'
+            }];
+            async.each(async_tasks, (item: any, cb: any) => {
+                item.task.then((data: any) => {
+                    if (data !== undefined) {
+                        if (item.key === 'stats') {
+                            response_data['total'] = data;
+                            response_data['pages'] = Math.ceil(data / limit)
+                        } else if (item.key === 'docs') {
+                            response_data['docs'] = data
+                        }
+                    }
+                    cb();
+                })
+            }, (err2: any) => {
+                if (err2) {
+                    reject(err2);
+                }
+                resolve(response_data);
+            });
         });
     }
 
@@ -149,5 +188,6 @@ export class ShiftApplicationRecord implements IShiftApplicationRecord {
             }
         });
     }
+
 
 }

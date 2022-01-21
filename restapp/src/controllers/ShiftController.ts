@@ -19,7 +19,7 @@ import {IHCPRecord} from "../records/IHCPRecord";
 import {IFacilityRecord} from "../records/IFacilityRecord";
 import {IUserRecord} from "../records/IUserRecord";
 import {sendSMS, sendTemplateMail, sendPushNotification} from "../utils/helpers"
-
+const createCsvWriter = require('csv-writer').createObjectCsvWriter;
 import moment from 'moment';
 
 const lambda = new AWS.Lambda({
@@ -438,6 +438,10 @@ class ShiftController implements IShiftController {
             }
             if (body.hcp_types != undefined && body.hcp_types.length > 0) {
                 filter["hcp_type"] = {$in: body.hcp_types};
+            }
+            if (body.new_shifts != undefined) {
+                let date = new Date(body.new_shifts)
+                filter["shift_date"] = {"$gte": date}
             }
             if (typeof body.start_date !== "undefined") {
                 let start_date = new Date(body.start_date)
@@ -1213,13 +1217,15 @@ class ShiftController implements IShiftController {
                             // @ts-ignore
                             metaData["expiry_date"] = body.expiry_date
                         }
-                        const response = await this.uploadFile({
+                        let params: any = {
                             "Bucket": process.env.HCP_BUCKET_NAME,
                             "Key": filKey,
                             "ContentType": body.file_type,
-                            "Metadata": metaData
-                        });
+                            "Metadata": metaData,
+                            "ContentDisposition": "attachment"
+                        }
 
+                        const response = await this.uploadFile(params);
                         req.replyBack(200, {"msg": "attachment uploaded", "data": response});
                     } else {
                         req.replyBack(500, {error: "shift must be completed to upload the attachments"});
@@ -1377,6 +1383,66 @@ class ShiftController implements IShiftController {
 
 
     }
+
+    downloadShifts = async (req: IRouterRequest) => {
+        try {
+            const body = req.getBody();
+
+            let rules = {
+                shift_status: 'in:pending,in_progress,complete,cancelled,closed',
+            };
+
+            let validation = new Validator(body, rules);
+
+            validation.passes(async () => {
+                try {
+                    let filter: any = {}
+                    let records: any = []
+
+                    const shifts = await this.ShiftRecord?.getShifts(filter);
+                    const facilities_map = await this.getAllFacilitiesList();
+
+                    for (let shift of shifts) {
+                        let facility = facilities_map[shift.facility_id]
+                        let record = {
+                            hcp_type: shift.hcp_type,
+                            facility_name: facility.facility_name
+                        }
+                        records.push(record)
+                    }
+
+                    let file_name = uuid() + ".csv"
+                    const csvWriter = createCsvWriter({
+                        path: '/var/task/restapp/build/src/downloads/' + file_name,
+                        header: [
+                            {id: 'hcp_type', title: 'HCP Type'},
+                            {id: 'facility_name', title: 'Healthcare Facility'},
+                        ]
+                    });
+                    await csvWriter.writeRecords(records)
+                    let url = process.env.API_URL + "download/" + file_name
+
+                    req.replyBack(200, {
+                        "msg": "shift master downloaded",
+                        "data": url
+                    });
+                } catch (err) {
+                    console.log(err, "err");
+                    req.replyBack(500, {error: err});
+                }
+            });
+
+            validation.fails((errors: any) => {
+                req.replyBack(400, {errors: validation.errors.errors})
+            });
+
+        } catch (err) {
+            req.replyBack(500, {error: err});
+        }
+
+
+    }
+
 }
 
 
