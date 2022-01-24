@@ -41,5 +41,4 @@ logs:
 deploy-application:
 	npm install -g serverless; npm install;
 	cd restapp; npm install; npm run build;
-	echo "$$$$$$$$$$$$$$$$$4 BYE $$$$$$$$$$$";
 	serverless deploy --restapp --force --stage $(STAGE);
