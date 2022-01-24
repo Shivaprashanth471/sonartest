@@ -1,10 +1,14 @@
 name: Vitawerks Test CI&CD setup
 
 on:
-  pull_request_review:
-    types:
-      - submitted
+  pull_request:
+    branches: 
+      - main
+    types: [closed]
 jobs:
+  my-action:
+    if: ${{ github.event.pull_request.merged }}
+    
   build:
     runs-on: ubuntu-latest
     steps:
@@ -27,3 +31,6 @@ jobs:
         
       - name: Install npm dependencies
         run: make deploy-application STAGE=uat
+
+        
+
