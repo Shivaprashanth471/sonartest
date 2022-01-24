@@ -37,3 +37,8 @@ env:
 
 logs:
 	sls logs -f restapp --stage $(STAGE);
+
+deploy-application:
+	npm install
+	cd restapp; npm install; npm run build;
+	sls deploy --restapp --force --stage $(STAGE);
