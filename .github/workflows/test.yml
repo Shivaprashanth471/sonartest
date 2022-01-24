@@ -26,5 +26,4 @@ jobs:
         with:
           node-version: "14.x"
       - name: Install npm dependencies
-        run: |
-        make deploy-application STAGE=dev
+        run: make deploy-application STAGE=dev
