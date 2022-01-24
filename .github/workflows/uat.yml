@@ -1,10 +1,9 @@
 name: Vitawerks Test CI&CD setup
 
-on:
-  push:
-    branches:
-      - "uat"
-
+on
+  pull_request_review:
+    types:
+      - submitted
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -18,7 +17,7 @@ jobs:
         with:
           key: ${{ secrets.AWS_ACCESS_KEY_ID }}
           secret: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          region: ${{ secrets.AWS_TEST_REGION }}
+          region: ${{ secrets.AWS_PROD_REGION }}
           profile: vw
 
       - name: Install Node.js
@@ -26,4 +25,4 @@ jobs:
         with:
           node-version: "14.x"
       - name: Install npm dependencies
-        run: make deploy-application STAGE=dev
+        run: make deploy-application STAGE=uat

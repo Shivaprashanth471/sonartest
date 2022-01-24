@@ -3,7 +3,7 @@ name: Vitawerks Test CI&CD setup
 on:
   push:
     branches:
-      - "main"
+      - "development"
 
 jobs:
   build:
@@ -26,4 +26,4 @@ jobs:
         with:
           node-version: "14.x"
       - name: Install npm dependencies
-        run: make deploy-application STAGE=dev
+        run: make deploy-application STAGE=test
