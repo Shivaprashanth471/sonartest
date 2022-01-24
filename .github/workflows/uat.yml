@@ -1,6 +1,6 @@
 name: Vitawerks Test CI&CD setup
 
-on
+on:
   pull_request_review:
     types:
       - submitted
