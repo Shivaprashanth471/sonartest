@@ -39,6 +39,7 @@ logs:
 	sls logs -f restapp --stage $(STAGE);
 
 deploy-application:
-	pwd;npm install;
-	cd restapp;pwd; npm install; npm run build;
+	npm install -g serverless; npm install;
+	cd restapp; npm install; npm run build;
+	echo "$$$$$$$$$$$$$$$$$4 BYE $$$$$$$$$$$";
 	serverless deploy --restapp --force --stage $(STAGE);
