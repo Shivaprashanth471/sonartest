@@ -1,4 +1,4 @@
-name: Vitawerks Test CI&CD setup
+name: Vitawerks Prod CI&CD setup
 
 on:
   repository_dispatch:

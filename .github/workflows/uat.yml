@@ -1,4 +1,4 @@
-name: Vitawerks Test CI&CD setup
+name: Vitawerks UAT CI&CD setup
 
 on:
   pull_request:
@@ -31,6 +31,9 @@ jobs:
         run: make deploy-application STAGE=uat
 
   
+
+
+
 
 
 
