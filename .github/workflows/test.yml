@@ -2,7 +2,8 @@ name: Vitawerks Test CI&CD setup
 
 on:
   push:
-    - "main"
+    branches:
+      - "main"
 
 jobs:
   build:
