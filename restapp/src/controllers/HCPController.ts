@@ -47,6 +47,84 @@ class HCPController implements IHCPController {
     @inject(TYPES.IUserRecord) UserRecord: IUserRecord | undefined;
     @inject(TYPES.IHCPReferenceRecord) HCPReferenceRecord: IHCPReferenceRecord | undefined;
 
+    signUP = (req: IRouterRequest): void => {
+        try {
+            let rules = {
+                first_name: 'required',
+                last_name: 'required',
+                hcp_type: 'in:RN,LVN,CNA,MedTech,CareGiver',
+                email: 'required|email|unique:hcps,email|unique:users,email',
+                contact_number: 'required|min:8',
+                address: {
+                    "street": "min:2",
+                    "city": "min:2",
+                    "region": "min:2",
+                    "state": "min:1",
+                    "country": "min:2",
+                    "zip_code": "required|min:5",
+                    "geoCode": "NA"
+                }
+            };
+
+            let validation = new Validator(req.getBody(), rules);
+
+            validation.fails((errors: any) => {
+                req.replyBack(400, {
+                    "success": false,
+                    errors: validation.errors.errors
+                })
+            });
+
+            validation.passes(async () => {
+
+                try {
+
+                    const body = req.getBody();
+
+                    const hcp = {
+                        "first_name": body.first_name,
+                        "last_name": body.last_name,
+                        "contact_number": body.contact_number,
+                        "email": body.email,
+                        "hcp_type": body.hcp_type,
+                        "address": {
+                            "street": body.address.street,
+                            "city": body.address.city,
+                            "region": body.address.region,
+                            "state": body.address.state,
+                            "country": body.address.country,
+                            "zip_code": body.address.zip_code,
+                            "geoCode": "NA"
+                        },
+                        "is_approved": false,
+                        "status": "pending",
+                        "is_active": false,
+                        "created_at": new Date(),
+                        "updated_at": new Date()
+                    }
+
+                    await this.HCPRecord?.addHCP(hcp);
+
+                    req.replyBack(200, {
+                        msg: "HCP registered successfully !",
+                        data: hcp
+                    })
+
+                } catch (err) {
+                    console.log("err", err);
+                    req.replyBack(500, {
+                        error: err
+                    })
+                }
+
+            });
+        } catch (err) {
+            req.replyBack(500, {
+                error: err
+            })
+        }
+    }
+
     addHCP = (req: IRouterRequest): void => {
         let rules = {
             first_name: 'required',
@@ -83,6 +161,14 @@ class HCPController implements IHCPController {
                 last_call_date: 'date',
                 contact_type: 'in:email,text_message,voicemail,chat',
                 other_information: 'min:2',
+                is_certified_to_practice: 'boolean',
+                is_vaccinated: 'boolean',
+                is_authorized_to_work: 'boolean',
+                is_require_employment_sponsorship: 'boolean',
+                vaccination_dates: {
+                    first_shot: "date",
+                    latest_shot: "date"
+                },
             },
             professional_details: {
                 experience: "numeric|min:0",
@@ -139,6 +225,14 @@ class HCPController implements IHCPController {
                         "last_call_date": body.nc_details.last_call_date,
                         "contact_type": body.nc_details.contact_type,
                         "other_information": body.nc_details.other_information,
+                        "is_certified_to_practice": body.nc_details.is_certified_to_practice,
+                        "is_vaccinated": body.nc_details.is_vaccinated,
+                        "is_authorized_to_work": body.nc_details.is_authorized_to_work,
+                        "is_require_employment_sponsorship": body.nc_details.is_require_employment_sponsorship,
+                        "vaccination_dates": {
+                            "first_shot": body.nc_details.vaccination_dates.first_shot,
+                            "latest_shot": body.nc_details.vaccination_dates.first_shot
+                        },
                     },
                     "is_approved": false,
                     "status": "pending",
@@ -449,6 +543,14 @@ class HCPController implements IHCPController {
                 last_call_date: 'date',
                 contact_type: 'in:email,text_message,voicemail,chat',
                 other_information: 'min:2',
+                is_certified_to_practice: 'boolean',
+                is_vaccinated: 'boolean',
+                is_authorized_to_work: 'boolean',
+                is_require_employment_sponsorship: 'boolean',
+                vaccination_dates: {
+                    first_shot: "date",
+                    latest_shot: "date"
+                },
             },
             address: {
                 "street": "min:2",
@@ -461,6 +563,12 @@ class HCPController implements IHCPController {
             },
             professional_details: {
                 experience: "numeric|min:0",
+            },
+            contract_details: {
+                rate_per_hour: 'min:0',
+                signed_on: 'date',
+                salary_credit_date: 'max:2',
+                expiry_date: 'date',
             }
         };
 
@@ -515,6 +623,9 @@ class HCPController implements IHCPController {
                 }
                 if (body.nc_details) {
                     hcp.nc_details = body.nc_details;
+                }
+                if (body.contract_details) {
+                    hcp.contract_details = body.contract_details;
                 }
                 if (body.nurse_champion_id) {
                     hcp.nurse_champion_id = new ObjectId(body.nurse_champion_id)
@@ -1371,16 +1482,16 @@ class HCPController implements IHCPController {
                     attachment_type: body.attachment_type,
                     file_name: body.file_name,
                     file_type: body.file_type,
+                }
+
+                let contract_details: any = {
                     rate_per_hour: body.rate_per_hour,
                     signed_on: body.signed_on,
                     salary_credit_date: body.salary_credit_date
                 }
-
                 if (body.expiry_date) {
-                    metaData["expiry_data"] = body.expiry_date
+                    contract_details["expiry_date"] = body.expiry_date
                 }
-
-                // TODO --> Swetha we should store the contract details in DB since they are financial related.
 
                 const response = await this.uploadFile({
                     "Bucket": process.env.HCP_BUCKET_NAME,
@@ -1390,9 +1501,14 @@ class HCPController implements IHCPController {
                 });
 
                 req.replyBack(200, {
-                    msg: 'contract updated',
+                    msg: 'contract uploaded',
                     data: response
                 });
+
+                let hcp = await this.HCPRecord?.getHCP({_id: new ObjectId(hcp_id)});
+                hcp.contract_details = contract_details
+
+                await this.HCPRecord?.editHCP({_id: new ObjectId(hcp_id)}, hcp)
 
             } catch (err: any) {
                 console.log("err", err);
@@ -1439,14 +1555,9 @@ class HCPController implements IHCPController {
                             Key: object.Key
                         })
 
-                        console.log("Contract Metadata ===========>", metaData)
                         if (metaData.Metadata) {
                             objData.attachment_type = metaData.Metadata.attachment_type
-                            objData.expiry_date = metaData.Metadata.expiry_date
                             objData.file_name = metaData.Metadata.file_name
-                            objData.rate_per_hour = metaData.Metadata.rate_per_hour
-                            objData.signed_on = metaData.Metadata.signed_on
-                            objData.salary_credit_date = metaData.Metadata.salary_credit_date
                             objData.ContentType = metaData.ContentType;
                             objData.file_key = object.Key
                         }
@@ -1456,12 +1567,10 @@ class HCPController implements IHCPController {
                     }
                 }
 
-
                 req.replyBack(200, {
                     msg: 'contract details',
                     data: attachments
                 });
-
 
             } catch (err: any) {
                 console.log("err", err);
@@ -1505,6 +1614,11 @@ class HCPController implements IHCPController {
                     msg: 'hcp contract deleted '
                 });
 
+                let hcp = await this.HCPRecord?.getHCP({_id: new ObjectId(hcp_id)});
+                delete hcp.contract_details
+
+                await this.HCPRecord?.editHCP({_id: new ObjectId(hcp_id)}, hcp)
+
             } catch (err: any) {
                 console.log("err", err);
                 req.replyBack(500, {
@@ -1515,7 +1629,6 @@ class HCPController implements IHCPController {
         });
 
         validation.fails((errors: any) => {
-            console.log("fails ... ")
             req.replyBack(400, {
                 "success": false,
                 errors: validation.errors.errors

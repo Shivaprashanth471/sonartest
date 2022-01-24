@@ -19,6 +19,7 @@ import {IHCPRecord} from "../records/IHCPRecord";
 import {IFacilityRecord} from "../records/IFacilityRecord";
 import {IUserRecord} from "../records/IUserRecord";
 import {sendSMS, sendTemplateMail, sendPushNotification} from "../utils/helpers"
+
 const createCsvWriter = require('csv-writer').createObjectCsvWriter;
 import moment from 'moment';
 
@@ -278,7 +279,6 @@ class ShiftController implements IShiftController {
                             email: hcp.email,
                             gender: hcp.gender,
                             hcp_type: hcp.hcp_type,
-                            rate: 10 // TODO accept rate in hcp registration and use that here ..
                         },
                         expected: {
                             shift_duration_minutes: expected_duration,
@@ -603,6 +603,11 @@ class ShiftController implements IShiftController {
                     shift.hcp_user.address = hcp.address
                     shift.hcp_user.experience = hcp.professional_details.experience
                     shift.hcp_user.contact_number = hcp.contact_number
+                    if (hcp.contract_details) {
+                        shift.hcp_user.rate = hcp.contract_details.rate_per_hour
+                    } else {
+                        shift.hcp_user.rate = 0
+                    }
 
                     if (shift.shift_status == "cancelled") {
                         if (typeof shift.cancelled_details != "undefined") {

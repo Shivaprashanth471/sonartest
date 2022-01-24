@@ -10,6 +10,7 @@ import Validator from "validatorjs";
 import {IShiftRequirementRecord} from "../records/IShiftRequirementRecord";
 import {IFacilityMemberRecord} from "../records/IFacilityMemberRecord";
 import {IFacilityShiftRecord} from "../records/IFacilityShiftRecord";
+import {type} from "os";
 
 const AWS = require("aws-sdk");
 const S3 = new AWS.S3({
@@ -513,11 +514,11 @@ class FacilityController implements IFacilityController {
                 if (typeof body.website_url != "undefined") {
                     facility.website_url = body.website_url;
                 }
-                if (body.is_active != undefined) {
+                if (typeof body.is_active != undefined) {
                     facility.is_active = body.is_active;
                 }
 
-                if (body.address) {
+                if (typeof body.address != "undefined") {
                     facility.address = body.address;
                 }
 
@@ -525,48 +526,48 @@ class FacilityController implements IFacilityController {
                     facility.about = body.about;
                 }
 
-                if (body.hourly_base_rates && body.hourly_base_rates.cna) {
+                if (typeof body.hourly_base_rates != "undefined" && typeof body.hourly_base_rates.cna != "undefined") {
                     facility.hourly_base_rates.cna = body.hourly_base_rates.cna;
                 }
-                if (body.hourly_base_rates && body.hourly_base_rates.lvn) {
+                if (typeof body.hourly_base_rates != "undefined" && typeof body.hourly_base_rates.lvn != "undefined") {
                     facility.hourly_base_rates.lvn = body.hourly_base_rates.lvn;
                 }
-                if (body.hourly_base_rates && body.hourly_base_rates.rn) {
+                if (typeof body.hourly_base_rates != "undefined" && typeof body.hourly_base_rates.rn != "undefined") {
                     facility.hourly_base_rates.rn = body.hourly_base_rates.rn;
                 }
-                if (body.hourly_base_rates && body.hourly_base_rates.care_giver) {
+                if (typeof body.hourly_base_rates != "undefined" && typeof body.hourly_base_rates.care_giver != "undefined") {
                     facility.hourly_base_rates.care_giver = body.hourly_base_rates.care_giver;
                 }
-                if (body.hourly_base_rates && body.hourly_base_rates.med_tech) {
+                if (typeof body.hourly_base_rates != "undefined" && typeof body.hourly_base_rates.med_tech != "undefined") {
                     facility.hourly_base_rates.med_tech = body.hourly_base_rates.med_tech;
                 }
-                if (body.hourly_base_rates && body.hourly_base_rates.holiday) {
+                if (typeof body.hourly_base_rates != "undefined" && typeof body.hourly_base_rates.holiday != "undefined") {
                     facility.hourly_base_rates.holiday = body.hourly_base_rates.holiday;
                 }
-                if (body.hourly_base_rates && body.hourly_base_rates.hazard) {
+                if (typeof body.hourly_base_rates != "undefined" && typeof body.hourly_base_rates.hazard != "undefined") {
                     facility.hourly_base_rates.hazard = body.hourly_base_rates.hazard;
                 }
 
-                if (body.diff_rates && body.diff_rates.pm) {
+                if (typeof body.diff_rates != "undefined" && typeof body.diff_rates.pm != "undefined") {
                     facility.diff_rates.pm = body.diff_rates.pm;
                 }
-                if (body.diff_rates && body.diff_rates.noc) {
+                if (typeof body.diff_rates != "undefined" && typeof body.diff_rates.noc != "undefined") {
                     facility.diff_rates.noc = body.diff_rates.noc;
                 }
-                if (body.diff_rates && body.diff_rates.weekend) {
+                if (typeof body.diff_rates != "undefined" && typeof body.diff_rates.weekend != "undefined") {
                     facility.diff_rates.weekend = body.diff_rates.weekend;
                 }
 
-                if (body.conditional_rates && body.conditional_rates.overtime) {
+                if (typeof body.conditional_rates != "undefined" && typeof body.conditional_rates.overtime != "undefined") {
                     facility.conditional_rates.overtime = body.conditional_rates.overtime;
                 }
-                if (body.conditional_rates && body.conditional_rates.rush) {
+                if (typeof body.conditional_rates != "undefined" && typeof body.conditional_rates.rush != "undefined") {
                     facility.conditional_rates.rush = body.conditional_rates.rush;
                 }
-                if (body.conditional_rates && body.conditional_rates.cancellation_before) {
+                if (typeof body.conditional_rates != "undefined" && typeof body.conditional_rates.cancellation_before != "undefined") {
                     facility.conditional_rates.cancellation_before = body.conditional_rates.cancellation_before;
                 }
-                if (body.conditional_rates && body.conditional_rates.shift_early_completion) {
+                if (typeof body.conditional_rates != "undefined" && typeof body.conditional_rates.shift_early_completion != "undefined") {
                     facility.conditional_rates.shift_early_completion = body.conditional_rates.shift_early_completion;
                 }
                 if (typeof body.timezone != "undefined") {
@@ -609,9 +610,15 @@ class FacilityController implements IFacilityController {
             email: 'email',
             designation: 'min:2',
         };
-        ;
 
         let validation = new Validator(body, rules);
+
+        validation.fails((errors: any) => {
+            req.replyBack(400, {
+                "success": false,
+                errors: validation.errors.errors
+            })
+        });
 
         validation.passes(async () => {
 
@@ -644,14 +651,6 @@ class FacilityController implements IFacilityController {
                     error: err
                 });
             }
-        });
-
-        validation.fails((errors: any) => {
-            console.log("fails ... ")
-            req.replyBack(400, {
-                "success": false,
-                errors: validation.errors.errors
-            })
         });
     }
 

@@ -1,6 +1,8 @@
 import {IRouterRequest} from "../interfaces/IRouterRequest";
 
 export interface IHCPController {
+    signUP: (req: IRouterRequest) => void
+
     addHCP: (req: IRouterRequest) => void
     listHCP: (req: IRouterRequest) => void
     listLiteHCP: (req: IRouterRequest) => void

@@ -489,7 +489,7 @@ class UserController implements IUserController {
 
     sendOTP = async (req: IRouterRequest): Promise<any> => {
         let rules = {
-            email: 'required|email',
+            contact_number: 'required|min:8',
         };
 
         let validation = new Validator(req.getBody(), rules);
@@ -508,7 +508,7 @@ class UserController implements IUserController {
                 let time_limit = DateTime.utc().plus(Duration.fromMillis(10 * 60 * 1000));
 
                 let verificationCode = {
-                    "email": body.email,
+                    "contact_number": body.contact_number,
                     "code": code,
                     "code_expires_at": time_limit,
                     "is_active": true,
@@ -517,24 +517,27 @@ class UserController implements IUserController {
                 }
                 await this.VerificationCodeRecord?.addVerificationCode(verificationCode);
 
-                let emailStatus: any = 200, smsStatus: any = 200
-                let message = "<html><body> Hi, <br/><br/> Your verification code is " + code + ". <br/><br/> Enter this code in the Vitawerks app to register your customer account. <br/><br/> If you have any questions, send us an email account9@vitawerks.com. <br/><br/> We are glad you are here! <br/><br/> The Vitawerks team </html></body>"
-                let email = await sendTemplateMail(ses, "Signup Verification", message, body.email);
-                console.log("email result =======>", email)
+                let smsStatus: any = 200
+                let message = "Hi, \nYour verification code is " + code + ". \nEnter this code in the Vitawerks app to register your customer account. \nIf you have any questions, send us an email account9@vitawerks.com. \nWe are glad you are here! \n\nThe Vitawerks team"
+                const cleaned_phone_number = body.contact_number.replace(/\s/g, "");
+                let sms = await sendSMS(process.env.MAINLINE_USER_ID, message, cleaned_phone_number)
                 // @ts-ignore
-                if (typeof email["statusCode"] != "undefined") {
+                if (typeof sms["response"] != "undefined") {
                     // @ts-ignore
-                    emailStatus = email["statusCode"]
+                    if (typeof sms["response"]["status"] != "undefined") {
+                        // @ts-ignore
+                        smsStatus = sms["response"]["status"]
+                    }
                 }
 
-                console.log("email status in signup verification", emailStatus)
-                if (emailStatus == 400) {
+                console.log("sms status in signup verification", smsStatus)
+                if (smsStatus == 400) {
                     return req.replyBack(500, {
                         msg: "unable to send password reset code to either mobile or email",
                     });
                 }
                 return req.replyBack(200, {
-                    msg: "verification code has been sent to your email",
+                    msg: "verification code has been sent to your phone",
                 });
 
             } catch (err) {
@@ -548,7 +551,7 @@ class UserController implements IUserController {
 
     otpVerification = async (req: IRouterRequest): Promise<any> => {
         let rules = {
-            email: 'required|email',
+            contact_number: 'required|min:8',
             code: 'required',
         };
 
@@ -565,7 +568,7 @@ class UserController implements IUserController {
             try {
                 const body = req.getBody();
                 const latestCode = await this.VerificationCodeRecord?.getVerificationCode({
-                    email: {$regex: new RegExp(body.email, "i")},
+                    contact_number: body.contact_number,
                     is_active: true
                 });
 
@@ -587,7 +590,7 @@ class UserController implements IUserController {
                             await this.VerificationCodeRecord?.editVerificationCode({_id: verificationCode._id}, verificationCode)
                             return req.replyBack(200, {
                                 http_code: 200,
-                                msg: 'email verification successful',
+                                msg: 'phone verification successful',
                                 data
                             })
                         } else {

@@ -9,6 +9,8 @@ export interface IShiftRequirementRecord {
 
     editRequirement(filter: any, updateObj: any): Promise<any>
 
+    editRequirements(filter: any, updateObj: any): Promise<any>
+
     getAllRequirements(data: any): Promise<any>
 
     paginate(filter: any, select: any, page: number, limit: number, sort: any): Promise<any>

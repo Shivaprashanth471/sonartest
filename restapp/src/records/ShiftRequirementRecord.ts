@@ -113,6 +113,16 @@ export class ShiftRequirementRecord implements IShiftRequirementRecord {
         });
     }
 
+    async editRequirements(filter: any, updateObj: any): Promise<any> {
+        return new Promise((resolve, reject) => {
+            this.getShiftRequirementCollection()?.updateMany(filter, updateObj).then((record: any) => {
+                resolve(record)
+            }).catch((err: any) => {
+                reject(err);
+            })
+        });
+    }
+
     getFacilityRequirements = (filter: any): Promise<any> => {
         return new Promise(async (resolve, reject) => {
             let records: any = []
@@ -120,6 +130,7 @@ export class ShiftRequirementRecord implements IShiftRequirementRecord {
             resolve(records)
         })
     }
+
 
     getFacilityRequirementsCount = (filter: any): Promise<any> => {
         return new Promise(async (resolve, reject) => {

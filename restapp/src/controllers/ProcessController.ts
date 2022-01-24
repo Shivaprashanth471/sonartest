@@ -85,10 +85,29 @@ class ProcessController implements IProcessController {
                     // }
                     // console.log("i am going to sms")
                     // await sendSMS(phoneUsrId, message, cleaned_phone_number);
-
                 }
-
             }
+            req.replyBack(200, {msg: 'shift reminder'});
+
+        } catch (err: any) {
+            console.log("err", err)
+        }
+
+    }
+
+    unfilledRequirements = async (req: IRouterRequest) => {
+        try {
+            console.log("i am in unfilled requirements")
+            let date = new Date().toJSON().slice(0, 10);
+            let today = new Date(date)
+
+            let filter = {
+                shift_date: {"$lt": today},
+                status: "open",
+                got_required_hcps: false
+            }
+            await this.ShiftRequirementRecord?.editRequirements(filter, {$set: {status: "unfilled"}})
+            req.replyBack(200, {msg: 'updated unfilled requirements'});
         } catch (err: any) {
             console.log("err", err)
         }

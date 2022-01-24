@@ -66,7 +66,17 @@ const registerEndpoints = () => {
         app.post('/resetPassword', wrapExpressRequest(userController.resetPassword));
         app.post('/sendOTP', wrapExpressRequest(userController.sendOTP));
         app.post('/otpVerification', wrapExpressRequest(userController.otpVerification));
+
         app.get('/shiftReminder', wrapExpressRequest(processController.shiftReminder));
+        app.get('/unfilledRequirements', wrapExpressRequest(processController.unfilledRequirements));
+
+        //signup flow
+        app.post('/hcp/signup', wrapExpressRequest(hcpController.signUP));
+        app.get('/hcp/:id', wrapExpressRequest(hcpController.getHCP));
+        app.put('/hcp/:id', wrapExpressRequest(hcpController.editHCP));
+        app.post('/hcp/:id/attachment', wrapExpressRequest(hcpController.addHCPAttachment));
+        app.get('/hcp/:id/attachments', wrapExpressRequest(hcpController.listHCPAttachment));
+        app.delete('/hcp/:id/attachment', wrapExpressRequest(hcpController.removeHCPAttachment));
 
         app.use(wrapExpressRequest(middleware.ParseJWToken))
 
@@ -143,8 +153,6 @@ const registerEndpoints = () => {
         app.post('/hcp', wrapExpressRequest(hcpController.addHCP));
         app.post('/hcp/list', wrapExpressRequest(hcpController.listHCP));
         app.get('/hcp/lite', wrapExpressRequest(hcpController.listLiteHCP));
-        app.get('/hcp/:id', wrapExpressRequest(hcpController.getHCP));
-        app.put('/hcp/:id', wrapExpressRequest(hcpController.editHCP));
         app.get('/hcp/:id/profile', wrapExpressRequest(hcpController.getHCProfile));
         app.put('/hcp/:id/profile', wrapExpressRequest(hcpController.editHCPProfile));
         app.patch('/hcp/:id/approve', wrapExpressRequest(hcpController.approveHCP));
@@ -154,10 +162,6 @@ const registerEndpoints = () => {
         app.post('/hcp/:id/education', wrapExpressRequest(hcpController.addHCPEducation));
         app.get('/hcp/:id/education', wrapExpressRequest(hcpController.listHCPEducation));
         app.delete('/hcp/:id/education/:education_id', wrapExpressRequest(hcpController.removeHCPEducation));
-
-        app.post('/hcp/:id/attachment', wrapExpressRequest(hcpController.addHCPAttachment));
-        app.get('/hcp/:id/attachments', wrapExpressRequest(hcpController.listHCPAttachment));
-        app.delete('/hcp/:id/attachment', wrapExpressRequest(hcpController.removeHCPAttachment));
 
         app.post('/hcp/:id/experience', wrapExpressRequest(hcpController.addHCPExperiance));
         app.get('/hcp/:id/experience', wrapExpressRequest(hcpController.listHCPExperiance));
@@ -209,16 +213,24 @@ if (process.env.RUN_LOCAL) {
     };
 }
 
-cron.schedule('0 0 * * *', () => {
+cron.schedule('0 0 0 * * *', async () => {
     try {
-        let config = {
+        console.log("########## RUNNING CRON JOB ##########")
+
+        await axios({
             method: 'get',
             url: process.env.API_URL + 'shiftReminder',
             headers: {}
-        };
-        axios(config)
+        })
+
+        await axios({
+            method: 'get',
+            url: process.env.API_URL + 'unfilledRequirements',
+            headers: {}
+        })
+
     } catch (e) {
-        console.log("running cron")
+        console.log("error in cron", e)
     }
 
 })

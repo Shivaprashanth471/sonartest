@@ -304,7 +304,6 @@ class ShiftApplicationController implements IShiftApplicationController {
                             email: hcp.email,
                             gender: hcp.gender,
                             hcp_type: hcp.hcp_type,
-                            rate: 10 // TODO accept rate in hcp registration and use that here ..
                         },
                         applied_by: {
                             first_name: applied_by_user.first_name,
