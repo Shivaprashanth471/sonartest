@@ -1,13 +1,11 @@
 name: Vitawerks Test CI&CD setup
 
 on:
-  pull_request:
-    branches: 
-      - main
-    types: [closed]
+  push:
+    branches:
+      - "main"
 jobs:
   build:
-    if: ${{ github.event.pull_request.merged }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
@@ -31,6 +29,8 @@ jobs:
         run: make deploy-application STAGE=uat
 
         
+
+
 
 
 
