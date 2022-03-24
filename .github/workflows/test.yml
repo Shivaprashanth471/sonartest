@@ -24,6 +24,12 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: "14.x"
+      - uses: mathrix-education/sonar-scanner@master
+        with:
+          version: 4.2.0.1873 # required
+          typescript: true
+          scan: true
+          args: --debug -Dsonar.login=${{ secrets.SONARQUBE_TOKEN }}
 
       # - name: Install npm dependencies
       #   run: make deploy-application STAGE=test
