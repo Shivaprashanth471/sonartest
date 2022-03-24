@@ -24,8 +24,8 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: "14.x"
-      - name: Install npm dependencies
-        run: make deploy-application STAGE=test
+      # - name: Install npm dependencies
+      #   run: make deploy-application STAGE=test
       - name: SonarQube Scan
         uses: kitabisa/sonarqube-action@v1.1.0
         with:
