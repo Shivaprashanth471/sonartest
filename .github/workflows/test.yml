@@ -13,13 +13,13 @@ jobs:
 
       - uses: actions/checkout@master
 
-      - name: Configure AWS credentials
-        uses: Fooji/create-aws-profile-action@v1
-        with:
-          key: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          secret: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          region: ${{ secrets.AWS_TEST_REGION }}
-          profile: vw
+      # - name: Configure AWS credentials
+      #   uses: Fooji/create-aws-profile-action@v1
+      #   with:
+      #     key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      #     secret: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      #     region: ${{ secrets.AWS_TEST_REGION }}
+      #     profile: vw
       - name: Install Node.js
         uses: actions/setup-node@v1
         with:
