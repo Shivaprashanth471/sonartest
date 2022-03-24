@@ -1,13 +1,12 @@
-name: Vitawerks UAT CI&CD setup
+name: Vitawerks Test CI&CD setup
 
 on:
-  pull_request:
-    branches: 
-      - main
-    types: [closed]
+  push:
+    branches:
+      - "main"
+
 jobs:
   build:
-    if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
@@ -19,13 +18,18 @@ jobs:
       #   with:
       #     key: ${{ secrets.AWS_ACCESS_KEY_ID }}
       #     secret: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      #     region: ${{ secrets.AWS_PROD_REGION }}
+      #     region: ${{ secrets.AWS_TEST_REGION }}
       #     profile: vw
-
       - name: Install Node.js
         uses: actions/setup-node@v1
         with:
           node-version: "14.x"
-        
-      - name: Install npm dependencies
-        run: make deploy-application STAGE=uat
+
+      # - name: Install npm dependencies
+      #   run: make deploy-application STAGE=test
+      - name: SonarQube Scan
+        uses: kitabisa/sonarqube-action@v1.1.0
+        with:
+          host: ${{ secrets.SONARQUBE_HOST }}
+          login: ${{ secrets.SONARQUBE_TOKEN }}
+     
