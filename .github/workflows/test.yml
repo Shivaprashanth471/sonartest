@@ -3,7 +3,7 @@ name: Vitawerks Test CI&CD setup
 on:
   push:
     branches:
-      - "main"
+      - "devlopment"
 
 jobs:
   build:
@@ -24,6 +24,8 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: "14.x"
+    
+
 
       # - name: Install npm dependencies
       #   run: make deploy-application STAGE=test
@@ -32,17 +34,17 @@ jobs:
       #   with:
       #     host: ${{ secrets.SONARQUBE_HOST }}
       #     login: ${{ secrets.SONARQUBE_TOKEN }}
-    - name: SonarQube Scan
-      uses: sonarsource/sonarqube-scan-action@master
-      env:
-        SONARQUBE_TOKEN: ${{ secrets.SONARQUBE_TOKEN }}
-        SONARQUBE_HOST: ${{ secrets.SONARQUBE_HOST }}
-    - name: SonarQube Quality Gate check
-      uses: sonarsource/sonarqube-quality-gate-action@master
-      # Force to fail step after specific time
-      timeout-minutes: 5
-      env:
-        SONARQUBE_TOKEN: ${{ secrets.SONARQUBE_TOKEN }}     
+    # - name: SonarQube Scan
+    #   uses: sonarsource/sonarqube-scan-action@master
+    #   env:
+    #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    #     SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+    # - name: SonarQube Quality Gate check
+    #   uses: sonarsource/sonarqube-quality-gate-action@master
+    #   # Force to fail step after specific time
+    #   timeout-minutes: 5
+    #   env:
+    #    SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}     
 
 
 
