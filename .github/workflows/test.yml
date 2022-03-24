@@ -3,7 +3,7 @@ name: Vitawerks Test CI&CD setup
 on:
   push:
     branches:
-      - "development"
+      - "main"
 
 jobs:
   build:
@@ -24,7 +24,7 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: "14.x"
-          
+
       # - name: Install npm dependencies
       #   run: make deploy-application STAGE=test
       - name: SonarQube Scan
