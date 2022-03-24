@@ -1,29 +1,31 @@
-name: Vitawerks Test CI&CD setup
+name: Vitawerks UAT CI&CD setup
 
 on:
-  push:
-    branches:
-      - "main"
-
+  pull_request:
+    branches: 
+      - main
+    types: [closed]
 jobs:
   build:
+    if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
 
       - uses: actions/checkout@master
 
-      - name: Configure AWS credentials
-        uses: Fooji/create-aws-profile-action@v1
-        with:
-          key: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          secret: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          region: ${{ secrets.AWS_TEST_REGION }}
-          profile: vw
+      # - name: Configure AWS credentials
+      #   uses: Fooji/create-aws-profile-action@v1
+      #   with:
+      #     key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      #     secret: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      #     region: ${{ secrets.AWS_PROD_REGION }}
+      #     profile: vw
 
       - name: Install Node.js
         uses: actions/setup-node@v1
         with:
           node-version: "14.x"
+        
       - name: Install npm dependencies
-        run: make deploy-application STAGE=dev
+        run: make deploy-application STAGE=uat
