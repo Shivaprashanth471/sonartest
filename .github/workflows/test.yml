@@ -24,7 +24,10 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: "14.x"
-      - uses: mathrix-education/sonar-scanner@master
+      - name: Scan with Sonar Scanner
+        uses: mathrix-education/sonar-scanner@1.0.0
+
+      # - uses: mathrix-education/sonar-scanner@master
         with:
           version: 4.2.0.1873 # required
           typescript: true
