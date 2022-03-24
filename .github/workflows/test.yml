@@ -13,26 +13,27 @@ jobs:
 
       - uses: actions/checkout@master
 
-      # - name: Configure AWS credentials
-      #   uses: Fooji/create-aws-profile-action@v1
-      #   with:
-      #     key: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      #     secret: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      #     region: ${{ secrets.AWS_TEST_REGION }}
-      #     profile: vw
+     
       - name: Install Node.js
         uses: actions/setup-node@v1
         with:
           node-version: "14.x"
-      - name: Scan with Sonar Scanner
-        uses: mathrix-education/sonar-scanner@1.0.0
+      # - name: Scan with Sonar Scanner
+      #   uses: mathrix-education/sonar-scanner@1.0.0
 
-      # - uses: mathrix-education/sonar-scanner@master
-        with:
-          version: 4.2.0.1873 # required
-          typescript: true
-          scan: true
-          args: --debug -Dsonar.login=${{ secrets.SONARQUBE_TOKEN }}
+      # # - uses: mathrix-education/sonar-scanner@master
+      #   with:
+      #     version: 4.2.0.1873 # required
+      #     typescript: true
+      #     scan: true
+      #     args: --debug -Dsonar.login=${{ secrets.SONARQUBE_TOKEN }}
+
+      - name: SonarQube Scan
+        uses: sonarsource/sonarqube-scan-action@master
+        env:
+          SONAR_TOKEN: ${{ secrets.SONARQUBE_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONARQUBE_HOST }}
+          LC_ALL: "ru_RU.UTF-8"
 
       # - name: Install npm dependencies
       #   run: make deploy-application STAGE=test
