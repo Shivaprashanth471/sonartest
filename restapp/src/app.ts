@@ -27,18 +27,13 @@ import {IBlastsController} from "./controllers/IBlastsController";
 import {IProcessController} from "./controllers/IProcessController"
 import {Container} from 'inversify';
 
- kqbk    bffkbwebjwefj   ekfbkje
-kjbjbefb    f kbjdbq    
-queueMicrotaskejf
-
-
 let path = require('path');
 let cron = require('node-cron')
-var axios = require('axiossssssss');
+var axios = require('axios');
 
 const app = express();
 app.use(bodyParser.json());
-app.use(cors()
+app.use(cors())
 
 // app.use('/downloads', express.static(path.join(__dirname, 'downloads')));
 // app.get('/download/:name', function (req, res) {
