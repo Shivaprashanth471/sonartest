@@ -14,7 +14,10 @@ jobs:
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
       - name: SonarCloud Scan
-        uses: /home/shiva/Documents/DevOps/sonar-scanner-4.7.0.2747-linux/bin
+        uses: kitabisa/sonarqube-action@v1.1.0
         env:
+          GITHUB_PATH: ${{secrets.GITHUB_PATH}}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONARQUBE _TOKEN }}
+
+              
