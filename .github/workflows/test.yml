@@ -3,7 +3,7 @@ name: Vitawerks Test CI&CD setup
 on:
   push:
     branches:
-      - "main"
+      - "master"
 
 jobs:
   build:
