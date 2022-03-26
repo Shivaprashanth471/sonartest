@@ -24,32 +24,15 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: "14.x"
-      - name: SonarCloud Scan
-        uses: sonarsource/sonarqube-scan-action@master
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}      
-
-
 
       # - name: Install npm dependencies
       #   run: make deploy-application STAGE=test
-      # - name: SonarQube Scan
-      #   uses: kitabisa/sonarqube-action@v1.1.0
-      #   with:
-      #     host: ${{ secrets.SONARQUBE_HOST }}
-      #     login: ${{ secrets.SONARQUBE_TOKEN }}
-    # - name: SonarQube Scan
-    #   uses: sonarsource/sonarqube-scan-action@master
-    #   env:
-    #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-    #     SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-    # - name: SonarQube Quality Gate check
-    #   uses: sonarsource/sonarqube-quality-gate-action@master
-    #   # Force to fail step after specific time
-    #   timeout-minutes: 5
-    #   env:
-    #    SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}     
+      - name: SonarQube Scan
+        uses: kitabisa/sonarqube-action@v1.1.0
+        with:
+          host: ${{ secrets.SONAR_HOST_URL }}
+          login: ${{ secrets.SONAR_TOKEN }}
+     
 
 
 
