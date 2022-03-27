@@ -39,7 +39,7 @@ networks:
 
 volumes:
   sonarqube_conf:
-  sonarqube_data:
+  sonarqube_data: 
   sonarqube_extensions:
   sonarqube_bundled-plugins:
   postgresql:
