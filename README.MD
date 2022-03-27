@@ -1,1 +1,1 @@
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Shivaprashanth471_sonartest&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Shivaprashanth471_sonartest)
+sonar:qube :[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Shivaprashanth471_sonartest&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Shivaprashanth471_sonartest)
