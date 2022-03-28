@@ -14,4 +14,4 @@ jobs:
       with:
         host: ${{ secrets.SONARQUBE_HOST }}
         login: ${{ secrets.SONARQUBE_TOKEN }}
-        path: ${{secrets.SONAR_PATH}}
+        # path: ${{secrets.SONAR_PATH}}
