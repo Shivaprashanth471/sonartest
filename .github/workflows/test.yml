@@ -1,9 +1,9 @@
-# name: Vitawerks Test CI&CD setup
+name: Vitawerks Test CI&CD setup
 
-# on:
-#   push:
-#     branches:
-#       - "master"
+on:
+  push:
+    branches:
+      - "master"
 
 # jobs:
 #   build:
