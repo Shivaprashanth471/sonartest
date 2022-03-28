@@ -1,111 +1,9 @@
-name: Vitawerks Test CI&CD setup
-
-on:
-  push:
-    branches:
-      - "main"
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v1
-
-      - uses: actions/checkout@master
-
-      # - name: Configure AWS credentials
-      #   uses: Fooji/create-aws-profile-action@v1
-      #   with:
-      #     key: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      #     secret: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      #     region: ${{ secrets.AWS_TEST_REGION }}
-      #     profile: vw
-      - name: Install Node.js
-        uses: actions/setup-node@v1
-        with:
-          node-version: "14.x"
-      - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
-
-      # - name: Install npm dependencies
-      #   run: make deploy-application STAGE=test
-      # - name: SonarQube Scan
-      #   uses: kitabisa/sonarqube-action@v1.1.0
-      #   with:
-      #     host: ${{ secrets.SONARQUBE_HOST }}
-      #     login: ${{ secrets.SONARQUBE_TOKEN }}
-    # - name: SonarQube Scan
-    #   uses: sonarsource/sonarqube-scan-action@master
-    #   env:
-    #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-    #     SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-    # - name: SonarQube Quality Gate check
-    #   uses: sonarsource/sonarqube-quality-gate-action@master
-    #   # Force to fail step after specific time
-    #   timeout-minutes: 5
-    #   env:
-    #    SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}     
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # name: Vitawerks Test CI&CD setup
 
 # on:
 #   push:
 #     branches:
-#       - "main"
+#       - "master"
 
 # jobs:
 #   build:
@@ -115,48 +13,134 @@ jobs:
 
 #       - uses: actions/checkout@master
 
-     
+#       # - name: Configure AWS credentials
+#       #   uses: Fooji/create-aws-profile-action@v1
+#       #   with:
+#       #     key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#       #     secret: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#       #     region: ${{ secrets.AWS_TEST_REGION }}
+#       #     profile: vw
 #       - name: Install Node.js
 #         uses: actions/setup-node@v1
 #         with:
 #           node-version: "14.x"
-#       # - name: Scan with Sonar Scanner
-#       #   uses: mathrix-education/sonar-scanner@1.0.0
-
-#       # # - uses: mathrix-education/sonar-scanner@master
-#       #   with:
-#       #     version: 4.2.0.1873 # required
-#       #     typescript: true
-#       #     scan: true
-#       #     args: --debug -Dsonar.login=${{ secrets.SONARQUBE_TOKEN }}
-
-#     # - name: SonarCloud Scan
-#     #   uses: sonarsource/sonarcloud-github-action@master
-#     #   env:
-#     #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#     #     SONAR_TOKEN: ${{ secrets.SONARQUBE_TOKEN }}      
-#     - name: SonarQube Scan
-#       uses: sonarsource/sonarqube-scan-action@master
-#       env:
-#         SONAR_TOKEN: ${{ secrets.SONARQUBE_TOKEN }}
-#         SONAR_HOST_URL: ${{ secrets.SONARQUBE_HOST }}
-#       # - name: SonarQube Scan
-#       #   uses: sonarsource/sonarqube-scan-action@master
-#       #   env:
-#       #     SONAR_TOKEN: ${{ secrets.SONARQUBE_TOKEN }}
-#       #     SONAR_HOST_URL: ${{ secrets.SONARQUBE_HOST }}
-#       #     LC_ALL: "ru_RU.UTF-8"
 
 #       # - name: Install npm dependencies
 #       #   run: make deploy-application STAGE=test
-#       # - name: SonarQube Scan
-#       #   uses: kitabisa/sonarqube-action@v1.1.0
-#       #   with:
-#       #     host: ${{ secrets.SONARQUBE_HOST }}
-#       #     login: ${{ secrets.SONARQUBE_TOKEN }}
+#       - name: SonarQube Scan
+#         uses: kitabisa/sonarqube-action@v1.1.0
+#         with:
+#           host: ${{ secrets.SONAR_HOST_URL }}
+#           login: ${{ secrets.SONAR_TOKEN }}
      
-#   #    sonar-scanner \
-#   # -Dsonar.projectKey=ssssss \
-#   # -Dsonar.sources=. \
-#   # -Dsonar.host.url=http://3.6.47.66:9000 \
-#   # -Dsonar.login=142291a98f198441fb84a2a3ea268dac1ca5bd87
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# # name: Vitawerks Test CI&CD setup
+
+# # on:
+# #   push:
+# #     branches:
+# #       - "main"
+
+# # jobs:
+# #   build:
+# #     runs-on: ubuntu-latest
+# #     steps:
+# #       - uses: actions/checkout@v1
+
+# #       - uses: actions/checkout@master
+
+     
+# #       - name: Install Node.js
+# #         uses: actions/setup-node@v1
+# #         with:
+# #           node-version: "14.x"
+# #       # - name: Scan with Sonar Scanner
+# #       #   uses: mathrix-education/sonar-scanner@1.0.0
+
+# #       # # - uses: mathrix-education/sonar-scanner@master
+# #       #   with:
+# #       #     version: 4.2.0.1873 # required
+# #       #     typescript: true
+# #       #     scan: true
+# #       #     args: --debug -Dsonar.login=${{ secrets.SONARQUBE_TOKEN }}
+
+# #     # - name: SonarCloud Scan
+# #     #   uses: sonarsource/sonarcloud-github-action@master
+# #     #   env:
+# #     #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+# #     #     SONAR_TOKEN: ${{ secrets.SONARQUBE_TOKEN }}      
+# #     - name: SonarQube Scan
+# #       uses: sonarsource/sonarqube-scan-action@master
+# #       env:
+# #         SONAR_TOKEN: ${{ secrets.SONARQUBE_TOKEN }}
+# #         SONAR_HOST_URL: ${{ secrets.SONARQUBE_HOST }}
+# #       # - name: SonarQube Scan
+# #       #   uses: sonarsource/sonarqube-scan-action@master
+# #       #   env:
+# #       #     SONAR_TOKEN: ${{ secrets.SONARQUBE_TOKEN }}
+# #       #     SONAR_HOST_URL: ${{ secrets.SONARQUBE_HOST }}
+# #       #     LC_ALL: "ru_RU.UTF-8"
+
+# #       # - name: Install npm dependencies
+# #       #   run: make deploy-application STAGE=test
+# #       # - name: SonarQube Scan
+# #       #   uses: kitabisa/sonarqube-action@v1.1.0
+# #       #   with:
+# #       #     host: ${{ secrets.SONARQUBE_HOST }}
+# #       #     login: ${{ secrets.SONARQUBE_TOKEN }}
+     
+# #   #    sonar-scanner \
+# #   # -Dsonar.projectKey=ssssss \
+# #   # -Dsonar.sources=. \
+# #   # -Dsonar.host.url=http://3.6.47.66:9000 \
+# #   # -Dsonar.login=142291a98f198441fb84a2a3ea268dac1ca5bd87
