@@ -8,6 +8,11 @@ jobs:
     name: SonarQube Trigger
     runs-on: ubuntu-latest
     steps:
+    - uses: joschi/setup-jdk@v2
+      with:
+        java-version: '11' # The OpenJDK version to make available on the path
+        architecture: 'x64' # defaults to 'x64'
+    - run: java -cp java HelloWorldApp
     - uses: actions/checkout@master
     - name: SonarQube Scan
       uses: kitabisa/sonarqube-action@v1.1.0
