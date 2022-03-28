@@ -1,17 +1,29 @@
 on:
+  # Trigger analysis when pushing in master or pull requests, and when creating
+  # a pull request. 
   push:
     branches:
-      - "main"
+      - master
+  pull_request:
+      types: [opened, synchronize, reopened]
 name: Main Workflow
 jobs:
-  sonarQubeTrigger:
-    name: SonarQube Trigger
+  sonarqube:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@master
-    - name: SonarQube Scan
-      uses: kitabisa/sonarqube-action@v1.1.0
+    - uses: actions/checkout@v2
       with:
-        host: ${{ secrets.SONARQUBE_HOST }}
-        login: ${{ secrets.SONARQUBE_TOKEN }}
-        path: ${{secrets.SONAR_PATH}}
+        # Disabling shallow clone is recommended for improving relevancy of reporting
+        fetch-depth: 0
+      # Triggering SonarQube analysis as results of it are required by Quality Gate check
+    - name: SonarQube Scan
+      uses: sonarsource/sonarqube-scan-action@master
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+    - name: SonarQube Quality Gate check
+      uses: sonarsource/sonarqube-quality-gate-action@master
+      # Force to fail step after specific time
+      timeout-minutes: 5
+      env:
+       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
