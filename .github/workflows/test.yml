@@ -23,7 +23,7 @@ jobs:
       - name: Trigger jenkins job
         uses: joshlk/jenkins-githubaction@master
         with:
-          url: http://localhost:8080/
+          url: http://183.82.123.239:8080/
           job_name: sonartesting
           username: ${{ secrets.JENKINS_USER }}
           api_token: ${{ secrets.JENKINS_TOKEN }}
