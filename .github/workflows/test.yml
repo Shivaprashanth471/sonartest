@@ -15,8 +15,16 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: "14.x"
-      - name: SonarQube Scan
-        uses: kitabisa/sonarqube-action@v1.1.0
+      # - name: SonarQube Scan
+      #   uses: kitabisa/sonarqube-action@v1.1.0
+      #   with:
+      #     host: ${{ secrets.SONARQUBE_HOST }}
+      #     login: ${{ secrets.SONARQUBE_TOKEN }}
+      - name: Trigger jenkins job
+        uses: joshlk/jenkins-githubaction@master
         with:
-          host: ${{ secrets.SONARQUBE_HOST }}
-          login: ${{ secrets.SONARQUBE_TOKEN }}
+          url: https://jenkins_url
+          job_name: sonartesting
+          username: ${{ secrets.JENKINS_USER }}
+          api_token: ${{ secrets.JENKINS_TOKEN }}
+          timeout: "1000"
