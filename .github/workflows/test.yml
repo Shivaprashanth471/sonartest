@@ -14,7 +14,7 @@ jobs:
         fetch-depth: 2    
     - name: testing
       run: |
-        git clone https://github.com/tericsoft-services/vitawerks_automation.git
+        git clone https://github.com/shivaprashanth471/tericsoft-services/vitawerks_automation.git
         cd vitawerks_automation
         install maven
         mvn test -Dtest=Pipeline1_Api_Smoke mvn test -Dtest=Pipeline1_Web_Smoke
