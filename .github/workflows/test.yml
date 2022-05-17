@@ -2,7 +2,7 @@ name: Deploy DEV-API to AKS Cluster
 on:
   push:
     branches:
-      - main
+      - master
 
 jobs:
   build:
