@@ -11,13 +11,17 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
       with:
-        fetch-depth: 2    
-    
-    - name: Git Clone Action
-      uses: sudosubin/git-clone-action@v1.0.1
-
+        fetch-depth: 2
+    - name: Clone supercharge docs repository
+      uses: actions/checkout@v2
       with:
-        repository: 'shivaprasanth471/tericsoft-services/vitawerks_automation'
+        repository: shivaprasanth471/tericsoft-services/vitawerks_automation    
+    
+    # - name: Git Clone Action
+    #   uses: sudosubin/git-clone-action@v1.0.1
+
+    #   with:
+    #     repository: 'shivaprasanth471/tericsoft-services/vitawerks_automation'
         # platform: 'github'
     #   run: |
     #     git clone https://github.com/shivaprashanth471/tericsoft-services/vitawerks_automation.git
