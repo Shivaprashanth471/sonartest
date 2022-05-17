@@ -17,7 +17,7 @@ jobs:
       uses: sudosubin/git-clone-action@v1.0.1
 
       with:
-        repository: 'shivaprashanth471/https://github.com/tericsoft-services/vitawerks_automation.git'
+        repository: 'tericsoft-services/vitawerks_automation'
         platform: 'github'
     #   run: |
     #     git clone https://github.com/shivaprashanth471/tericsoft-services/vitawerks_automation.git
