@@ -18,7 +18,7 @@ jobs:
 
       with:
         repository: 'shivaprasanth471/tericsoft-services/vitawerks_automation'
-        platform: 'github'
+        # platform: 'github'
     #   run: |
     #     git clone https://github.com/shivaprashanth471/tericsoft-services/vitawerks_automation.git
     #     cd vitawerks_automation
