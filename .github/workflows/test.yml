@@ -1,37 +1,23 @@
-# name: Vitawerks Test CI&CD setup
+name: Deploy DEV-API to AKS Cluster
+on:
+  push:
+    branches:
+      - main
 
-# on:
-#   push:
-#     branches:
-#       - "master"
-
-# jobs:
-#   build:
-#     runs-on: ubuntu-latest
-#     steps:
-#       - uses: actions/checkout@v1
-
-#       - uses: actions/checkout@master
-
-#       # - name: Configure AWS credentials
-#       #   uses: Fooji/create-aws-profile-action@v1
-#       #   with:
-#       #     key: ${{ secrets.AWS_ACCESS_KEY_ID }}
-#       #     secret: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-#       #     region: ${{ secrets.AWS_TEST_REGION }}
-#       #     profile: vw
-#       - name: Install Node.js
-#         uses: actions/setup-node@v1
-#         with:
-#           node-version: "14.x"
-
-#       # - name: Install npm dependencies
-#       #   run: make deploy-application STAGE=test
-#       - name: SonarQube Scan
-#         uses: kitabisa/sonarqube-action@v1.1.0
-#         with:
-#           host: ${{ secrets.SONAR_HOST_URL }}
-#           login: ${{ secrets.SONAR_TOKEN }}
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 2    
+    - name: testing
+      run: |
+        git clone https://github.com/tericsoft-services/vitawerks_automation.git
+        cd vitawerks_automation
+        install maven
+        mvn test -Dtest=Pipeline1_Api_Smoke mvn test -Dtest=Pipeline1_Web_Smoke
      
 
 
