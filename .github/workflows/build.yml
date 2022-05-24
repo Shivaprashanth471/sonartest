@@ -1,8 +1,8 @@
 on:
   push:
     branches:
-      - dev        # The default branch
-      - branch-* 
+      - master       # The default branch
+      # - branch-* 
 name: Main Workflow
 jobs:
   sonarQubeTrigger:
