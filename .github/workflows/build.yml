@@ -23,4 +23,4 @@ jobs:
         chmod +x ./InstallChrome.sh
         ./InstallChrome.sh
     - name: Run tests  
-      run: mvn test -Dtest=Pipeline1_Web_Smoke  
+      run: mvn test -Dtest=Pipeline2_Web_Regression  
