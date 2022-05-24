@@ -11,12 +11,16 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
       with:
-        fetch-depth: 2
-    - name: Clone supercharge docs repository
-      uses: actions/checkout@v2
-      with:
-        repository: tericsoft-services/vitawerks_automation   
-        path: master
+        fetch-depth:2
+steps:
+- uses: actions/checkout@master
+  with:
+    name: org1/repo1     <-- clone https://github.com/org1/repo1
+    # - name: Clone supercharge docs repository
+    #   uses: actions/checkout@v2
+    #   with:
+    #     repository: tericsoft-services/vitawerks_automation   
+    #     path: master
     
     # - name: Git Clone Action
     #   uses: sudosubin/git-clone-action@v1.0.1
